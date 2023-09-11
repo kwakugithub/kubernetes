@@ -1,14 +1,15 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo-deployment
+  name: webapp-deployment
   labels:
-    app: mongo
+    app: webapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo
+      app: webapp
   template:
     metadata:
       labels:
@@ -16,32 +17,39 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: nanjanashia/k8s-demo-app:v1.0
+        image: wordpress:latest
         ports:
         - containerPort: 3000
         env:
-        - name:  USER_NAME
-          valueFrom: 
+        - name: USER_NAME
+          valueFrom:
             secretKeyRef:
               name: mongo-secret
               key: mongo-user
         - name: USER_PWD
-          valueFrom: 
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: mongo-password
+        - name: DB_URL
+          valueFrom:
             configMapKeyRef:
               name: mongo-config
-              key: mongo-url   
+              key: mongo-url
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
   name: webapp-service
 spec:
-  type: Nodeport
+  type: NodePort  # Corrected to lowercase
   selector:
-    app: webApp
+    app: webapp  # Match the Deployment selector
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
       nodePort: 30100
+
