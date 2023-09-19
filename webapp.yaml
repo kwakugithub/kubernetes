@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: wordpress:latest
+        image: nanajanashia/k8s-demo-app:v1.0
         ports:
         - containerPort: 3000
         env:
@@ -51,5 +51,5 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-      nodePort: 30100
+      nodePort: 30190
 
